@@ -4,38 +4,13 @@ if (!isset($_SESSION["username"])) {
     header("Location: login.php");
     exit;
 }
-// $jumlahDataPerHalaman = 10;
-// $ambilData = mysqli_query($conn, "SELECT * FROM rm");
-// $jumlahData = mysqli_num_rows($ambilData);
-// $jumlahHalaman = ceil($jumlahData / $jumlahDataPerHalaman);
-
-// //cara mengambil halaman aktif
-// if (isset($_GET["page"])) {
-//     $halamanAktif = $_GET["page"];
-// } else {
-//     $halamanAktif = 1;
-// }
-
-// $awalData = ($jumlahDataPerHalaman * $halamanAktif) - $jumlahDataPerHalaman;
-
-// $result = mysqli_query($conn, "SELECT * FROM RANAP LIMIT $awalData, $jumlahDataPerHalaman");
-
-// $username = $_SESSION["username"];
-// $admins = mysqli_query($conn, "SELECT * FROM admin WHERE user = '$username' ");
-// $data_admin = mysqli_fetch_array($admins);
-
-//hanya untuk mengetest apakah tabel test1 ada didalam database test atau tidak
-// if (!$result) {
-//     echo mysqli_error($conn);
-// }
-
+$data = mysqli_query($conn, "SELECT rekam_medis.*, kamar.nama AS kamar, dokter.nama AS dokter, dokter.spesialis AS dokter_spesialis FROM rekam_medis INNER JOIN kamar ON rekam_medis.id_kamar = kamar.id_kamar INNER JOIN dokter ON rekam_medis.id_dokter = dokter.id_dokter WHERE rekam_medis.tanggal_keluar IS NULL ORDER BY tanggal_masuk DESC");
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -50,14 +25,13 @@ if (!isset($_SESSION["username"])) {
     <!-- Custom styles for this template-->
     <link href="assets/styles/sb-admin-2.css" rel="stylesheet">
     <link rel="stylesheet" href="vendor/datatables/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
 </head>
 
 <body id="page-top">
 
     <!-- Page Wrapper -->
     <div id="wrapper">
-
-        <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
@@ -81,7 +55,7 @@ if (!isset($_SESSION["username"])) {
 
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item active">
-                <a class="nav-link collapsed" href="datatamu.php" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
+                <a class="nav-link" href="datatamu.php">
                     <i class="fa-solid fa-list-check"></i>
                     <span>Pasien Masuk</span>
                 </a>
@@ -89,69 +63,92 @@ if (!isset($_SESSION["username"])) {
 
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="laporan.php" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
+                <a class="nav-link" href="laporan.php">
                     <i class="fa-solid fa-clipboard-check"></i>
                     <span>Laporan Pasien Ranap</span>
                 </a>
             </li>
+            <hr class="sidebar-divider">
+            <li class="nav-item">
+                <a class="nav-link" href="logout.php">
+                    <i class="fa-solid fa-sign-out"></i>
+                    <span>Keluar</span>
+                </a>
+            </li>
 
         </ul>
-        <!-- End of Sidebar -->
-
-        <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
-
-            <!-- Main Content -->
             <div id="content">
                 <!-- Begin Page Content -->
                 <div class="container-fluid mt-4">
-
-                    <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Pengelolaan Data Tamu</h1>
                     </div>
                     <div class="row">
-                        <div class="col">
+                        <div class="col-12">
+                            <?php if (isset($_SESSION["error"])) : ?>
+                                <div class="alert alert-danger" role="alert">
+                                    <?= $_SESSION["error"] ?>
+                                </div>
+                            <?php unset($_SESSION["error"]);
+                            endif; ?>
+                            <?php if (isset($_SESSION["success"])) : ?>
+                                <div class="alert alert-success" role="alert">
+                                    <?= $_SESSION["success"] ?>
+                                </div>
+                            <?php unset($_SESSION["success"]);
+                            endif; ?>
+                        </div>
+                        <div class="col-12">
                             <div class="card">
                                 <div class="card-body">
-                                    <table class="table table-bordered table-hover table-xs" id="datatable">
+                                    <table class="table table-bordered table-hover table-sm" id="datatable">
                                         <thead>
                                             <tr>
                                                 <th class="table-info">No</th>
                                                 <th class="table-info">No Rekam Medis</th>
                                                 <th class="table-info">Nama</th>
                                                 <th class="table-info">Alamat</th>
-                                                <th class="table-info">Jaminan Kesehatan</th>
                                                 <th class="table-info">DPJP</th>
+                                                <th class="table-info">Diagnosa</th>
                                                 <th class="table-info">Kamar</th>
-                                                <th class="table-info">Tanggal</th>
-                                                <th class="table-info">Aksi</th>
+                                                <th class="table-info">Jaminan Kesehatan</th>
+                                                <th class="table-info">Tanggal Masuk</th>
+                                                <?php if ($user['role'] == 'ranap') : ?>
+                                                    <th class="table-info">Aksi</th>
+                                                <?php endif; ?>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                            </tr>
+                                            <?php $no = 1;
+                                            while ($row = mysqli_fetch_assoc($data)) : ?>
+                                                <tr>
+                                                    <td><?= $no++ ?></td>
+                                                    <td><?= $row['no_rm'] ?></td>
+                                                    <td><?= $row['nama'] ?></td>
+                                                    <td><?= $row['alamat'] ?></td>
+                                                    <td><?= $row['dokter'] ?></td>
+                                                    <td><?= $row['diagnosa'] ?></td>
+                                                    <td><?= $row['kamar'] ?></td>
+                                                    <td><?= $row['jamkes'] ?></td>
+                                                    <td><?= date('d F Y', strtotime($row['tanggal_masuk'])) ?></td>
+                                                    <?php if ($user['role'] == 'ranap') : ?>
+                                                        <td>
+                                                            <a href="edit-datatamu.php?id=<?= $row['id'] ?>" class="btn btn-info btn-sm">Edit</a>
+                                                            <a href="done-datatamu.php?id=<?= $row['id'] ?>" class="btn btn-success btn-sm">Tandakan Pasien Telah Keluar</a>
+                                                        </td>
+                                                    <?php endif; ?>
+                                                </tr>
+                                            <?php endwhile; ?>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
-
     </div>
 
     <script src="vendor/jquery/jquery.min.js"></script>
@@ -160,12 +157,25 @@ if (!isset($_SESSION["username"])) {
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
     <script src="js/sb-admin-2.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
     <script>
         $('#datatable').DataTable({
             "columnDefs": [{
                 "targets": [0],
                 "orderable": false
-            }]
+            }],
+            <?php if ($user['role'] != 'ranap') : ?>
+                dom: 'Bfrtip',
+                buttons: [{
+                    extend: 'excelHtml5',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+                    }
+                }]
+            <?php endif; ?>
         });
     </script>
 </body>
