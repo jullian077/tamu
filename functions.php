@@ -1,5 +1,5 @@
 <?php
-$conn = mysqli_connect('localhost', 'root', '', 'ranap');
+$conn = mysqli_connect('localhost', 'root', '', 'skripsi_nanang');
 
 function query($query) {
     global $conn;
@@ -45,5 +45,3 @@ function ubah($data) {
 
     return mysqli_affected_rows($conn);
 }
-
-?>

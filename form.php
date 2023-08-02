@@ -1,185 +1,152 @@
-<?php 
-//koneksi database
-// session_start();
-$conn = mysqli_connect("localhost", "root", "", "ranap");
-
-if( isset($_POST["submit"]) ) {
-
+<?php
+include 'config/koneksi.php';
+if (isset($_POST["no_rm"])) {
     //ambil data dari setiap form
-    $no_rm = htmlspecialchars($_POST["no_rm"]);
-    $nama = htmlspecialchars($_POST["nama"]);
-    $alamat = htmlspecialchars($_POST["alamat"]);
-    $jamkes = htmlspecialchars($_POST["jamkes"]);
-    $dpjp = htmlspecialchars($_POST["dpjp"]);
-    $kamar = htmlspecialchars($_POST["kamar"]);
-    $tanggal = htmlspecialchars($_POST["tanggal"]);
+    $no_rm = $_POST["no_rm"];
+    $nama = $_POST["nama"];
+    $alamat = $_POST["alamat"];
+    $diagnosa = $_POST["diagnosa"];
+    $jamkes = $_POST["jamkes"];
+    $id_dokter = $_POST["id_dokter"];
+    $id_kamar = $_POST["kamar"];
+    $rujukan = $_POST["rujukan"];
+    $tanggal_masuk = date("Y-m-d");
 
     //query insert data
-    $query = "INSERT INTO rm VALUES ('', '$no_rm', '$nama', '$alamat', '$jamkes', '$dpjp', '$kamar', '$tanggal')";
-    mysqli_query($conn, $query); 
-
-    //cek apakah data berhasil ditambahkan atau tidak
-    if( mysqli_affected_rows($conn) > 0) {
-        echo "
-            <script>
-                document.location.href = 'success-form.html';
-            </script>
-            ";
+    $query = "INSERT INTO rekam_medis (id_dokter, id_kamar, no_rm, nama, alamat, diagnosa, rujukan, jamkes, tanggal_masuk)
+                VALUES ('$id_dokter', '$id_kamar', '$no_rm', '$nama', '$alamat', '$diagnosa', '$rujukan', '$jamkes', '$tanggal_masuk')";
+    if (mysqli_query($conn, $query)) {
+        $_SESSION["success"] = 'Data berhasil disimpan!';
     } else {
-        echo "
-            <script>
-                alert('data gagal ditambahkan');
-            </script>
-            ";
+        $_SESSION["error"] = 'Data gagal disimpan!';
     }
-}
-
+    header("Refresh:0; url=form.php");
+} else {
+    $listDokter = mysqli_query($conn, "SELECT * FROM dokter");
+    $listKamar = mysqli_query($conn, "SELECT * FROM kamar");
 ?>
 
-<!doctype html>
-<html lang="en">
+    <!doctype html>
+    <html lang="en">
 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+        <link rel="stylesheet" href="assets/styles/main.css" type="text/css">
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
-    <link rel="stylesheet" href="assets/styles/main.css" type="text/css">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/4406ce97fd.js" crossorigin="anonymous"></script>
+        <title>Ranap Bantargebang</title>
+    </head>
 
-    <title>Ranap Bantargebang</title>
-</head>
-
-<body>
-     <script>
-        function isiNamaDokter() {
-          var inputiddokter = document.getElementById("id").value;
-          var inputNama = document.getElementById("nama");
-          
-          // Mengirim permintaan AJAX ke server untuk mengambil data dokter berdasarkan ID
-          var xhr = new XMLHttpRequest();
-          xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-              var response = JSON.parse(xhr.responseText);
-              if (response.nama) {
-                inputNamaDokter.value = response.nama;
-              } else {
-                inputNamaDokter.value = "";
-              }
-            }
-          };
-          xhr.open("GET", "ambil_data_dokter.php?id=" + inputiddokter, true);
-          xhr.send();
-        }
-      </script>
-    <section class="fill-form">
-        <div class="container-fluid">
+    <body style="background-color: #f5f5f5;">
+        <div class="container border bg-white my-5 shadow">
             <div class="row">
-                <div class="col">
-                    <div class="row form-header">
-                        <div class="col-lg-8">
-                            <a href="index.php" class="">
-                                <img src="assets/images/BukuTamu.png">
-                            </a>
-                            <h3 class="sub-header">
-                                RSUD BANTARGEBANG
-                            </h3>
-                            <form action="" class="basic-form" method="post">
-                                <div class="mb-3">
-                                    <label for="no_rm" class="form-label">NO REKAM MEDIS</label>
-                                    <input type="text" name="no_rm" class="form-control" id="no_rm" aria-describedby="emailHelp" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="nama" class="form-label">NAMA</label>
-                                    <input type="text" name="nama" class="form-control" id="nama" aria-describedby="emailHelp" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="alamat" class="form-label">ALAMAT</label>
-                                    <input type="text" name="alamat" class="form-control" id="alamat" aria-describedby="emailHelp" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">JAMINAN KESEHATAN</label>
-                                    <div class="px-3">
-                                        <label for="bpjs">
-                                            <input type="radio" name="jamkes" value="bpjs" id="bpjs" required>
-                                            BPJS
-                                        </label>
-                                        <br>
-                                        <label for="lkm-nik">
-                                            <input type="radio" name="jamkes" value="lkm-nik" id="lkm-nik">
-                                            LKM-NIK
-                                        </label>
-                                        <br>
-                                        <label for="umum">
-                                            <input type="radio" name="jamkes" value="umum" id="umum">
-                                            Umum
-                                        </label>
+                <div class="col-lg-5">
+                    <div class="p-5">
+                        <a href="index.php">
+                            <img src="assets/images/BukuTamu.png">
+                        </a>
+                        <h3 class="sub-header">
+                            RSUD BANTARGEBANG
+                        </h3>
+                        <form action="" method="post">
+                            <div class="mb-3 form-group">
+                                <?php if (isset($_SESSION["success"])) : ?>
+                                    <div class="alert alert-success" role="alert">
+                                        <?= $_SESSION["success"] ?>
                                     </div>
+                                <?php unset($_SESSION["success"]);
+                                endif; ?>
+                                <?php if (isset($_SESSION["error"])) : ?>
+                                    <div class="alert alert-danger" role="alert">
+                                        <?= $_SESSION["error"] ?>
+                                    </div>
+                                <?php unset($_SESSION["error"]);
+                                endif; ?>
+                            </div>
+                            <div class="mb-3 form-group">
+                                <label for="no_rm" class="form-label fw-bold">NOMOR REKAM MEDIS <span class="text-danger">*</span></label>
+                                <input type="text" name="no_rm" class="form-control" id="no_rm" required>
+                            </div>
+                            <div class="mb-3 form-group">
+                                <label for="nama" class="form-label fw-bold">NAMA <span class="text-danger">*</span></label>
+                                <input type="text" name="nama" class="form-control" id="nama" required autocomplete="off">
+                            </div>
+                            <div class="mb-3 form-group">
+                                <label for="alamat" class="form-label fw-bold">ALAMAT <span class="text-danger">*</span></label>
+                                <textarea name="alamat" id="alamat" rows="2" class="form-control" required autocomplete="off"></textarea>
+                            </div>
+                            <div class="mb-3 form-group">
+                                <label for="id_dokter" class="form-label fw-bold">DOKTER PENANGGUNG JAWAB <span class="text-danger">*</span></label>
+                                <select name="id_dokter" class="form-control form-select" required>
+                                    <option value=""></option>
+                                    <?php while ($row = mysqli_fetch_assoc($listDokter)) : ?>
+                                        <option value="<?= $row['id_dokter'] ?>"><?= $row['nama'] ?></option>
+                                    <?php endwhile ?>
+                                </select>
+                            </div>
+                            <div class="mb-3 form-group">
+                                <label for="kamar" class="form-label fw-bold">KAMAR PERAWATAN <span class="text-danger">*</span></label>
+                                <select name="kamar" class="form-control form-select" required="required">
+                                    <option value=""> </option>
+                                    <?php while ($row = mysqli_fetch_assoc($listKamar)) : ?>
+                                        <option value="<?= $row['id_kamar'] ?>"><?= $row['nama'] ?></option>
+                                    <?php endwhile ?>
+                                </select>
+                            </div>
+                            <div class="mb-3 form-group">
+                                <label for="rujukan" class="form-label fw-bold">RUJUKAN DARI</label>
+                                <select name="rujukan" class="form-control form-select">
+                                    <option value=""></option>
+                                    <option value="Unit Gawat Darurat">Unit Gawat Darurat</option>
+                                    <option value="Poli Penyakit Dalam">Poli Penyakit Dalam</option>
+                                    <option value="Poli Paru">Poli Paru</option>
+                                    <option value="Poli Kebidanan & Kandungan">Poli Kebidanan & Kandungan</option>
+                                    <option value="Poli Anak">Poli Anak</option>
+                                    <option value="Poli Bedah">Poli Bedah</option>
+                                    <option value="Poli Neurologi">Poli Neurologi</option>
+                                </select>
+                            </div>
+                            <div class="mb-3 form-group">
+                                <label class="form-label fw-bold">JAMINAN KESEHATAN <span class="text-danger">*</span></label>
+                                <div class="px-3">
+                                    <label for="bpjs">
+                                        <input type="radio" name="jamkes" value="bpjs" id="bpjs" required>
+                                        BPJS
+                                    </label>
+                                    <br>
+                                    <label for="lkm-nik">
+                                        <input type="radio" name="jamkes" value="lkm-nik" id="lkm-nik">
+                                        LKM-NIK
+                                    </label>
+                                    <br>
+                                    <label for="umum">
+                                        <input type="radio" name="jamkes" value="umum" id="umum">
+                                        Umum
+                                    </label>
                                 </div>
-                                <div class="mb-3">
-                                    <form method="POST" class="form-inline" action="">
-                                    <label for="id_dokter" class="form-label">ID DOKTER</label>
-                            <select name="id_dokter" class="form-control" style="margin-right: 20px;" required="required" oninput="IsiNamaDokter()">
-                                <option value=""> </option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option> 
-                            </select>
-                            </form>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="dpjp" class="form-label">DPJP</label>
-                                    <input type="text" name="dpjp" class="form-control" id="dpjp" aria-describedby="emailHelp" readonly>
-                                </div>                   
-                                <div class="mb-3">
-                                    <form method="POST" class="form-inline" action="">
-                                    <label for="kamar" class="form-label">KAMAR PERAWATAN</label>
-                            <select name="kamar" class="form-control" style="margin-right: 20px;" required="required">
-                                <option value=""> </option>
-                                <option value="1">R. Bougenvile</option>
-                                <option value="2">R. Crysan</option>
-                                <option value="3">R. Delima</option>
-                                <option value="4">R. Teratai</option>
-                                <option value="5">R. Tulip</option>
-                                <option value="6">R. Anggrek</option>
-                                <option value="6">R. Edelweis</option>
-                                <option value="6">R. Isolasi</option>
-                            </select>
-                            </form>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="tanggal" class="form-label">TANGGAL</label>
-                                    <input type="date" name="tanggal" class="form-control" id="tanggal" aria-describedby="emailHelp" required>
-                                </div>                                
-                                <div class="d-grid gap-2 button-form">
-                                    <button type="submit" name="submit" class="btn btn-master btn-primary">
-                                        SIMPAN DATA
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+                            </div>
+                            <div class="mb-3 form-group">
+                                <label for="diagnosa" class="form-label fw-bold">DIAGNOSA <span class="text-danger">*</span></label>
+                                <textarea name="diagnosa" id="diagnosa" rows="2" class="form-control" required autocomplete="off"></textarea>
+                            </div>
+                            <div class="d-grid gap-2 button-form">
+                                <button type="submit" class="btn btn-master btn-primary">
+                                    SIMPAN DATA
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
-                <div class="col illustration-form">
-                    <img src="assets/images/Illustration.png">
-                    <p>“HAI”</p>
+                <div class="col-lg-7 text-center illustration-form py-5 ps-5">
+                    <img src="assets/images/Illustration.png" class="text-center ps-5 pt-5 mt-5">
                 </div>
             </div>
         </div>
-    </section>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+    </body>
 
-</body>
-</html>
+    </html>
+<?php } ?>
