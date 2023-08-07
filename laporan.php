@@ -101,7 +101,7 @@ $data = mysqli_query($conn, "SELECT rekam_medis.*, kamar.nama AS kamar, dokter.n
                         </div>
                         <div class="col-12">
                             <div class="card">
-                                <div class="card-body">
+                                <div class="card-body table-responsive">
                                     <table class="table table-bordered table-hover table-sm" id="datatable">
                                         <thead>
                                             <tr>
@@ -113,6 +113,7 @@ $data = mysqli_query($conn, "SELECT rekam_medis.*, kamar.nama AS kamar, dokter.n
                                                 <th class="table-info">Diagnosa</th>
                                                 <th class="table-info">Kamar</th>
                                                 <th class="table-info">Jaminan Kesehatan</th>
+                                                <th class="table-info">Rujukan Dari</th>
                                                 <th class="table-info">Tanggal Masuk</th>
                                                 <th class="table-info">Tanggal Keluar</th>
                                                 <th class="table-info">Lama Rawat Inap</th>
@@ -125,24 +126,25 @@ $data = mysqli_query($conn, "SELECT rekam_medis.*, kamar.nama AS kamar, dokter.n
                                             <?php $no = 1;
                                             while ($row = mysqli_fetch_assoc($data)) : ?>
                                                 <tr>
-                                                    <td><?= $no++ ?></td>
-                                                    <td><?= $row['no_rm'] ?></td>
-                                                    <td><?= $row['nama'] ?></td>
-                                                    <td><?= $row['alamat'] ?></td>
-                                                    <td><?= $row['dokter'] ?></td>
-                                                    <td><?= $row['diagnosa'] ?></td>
-                                                    <td><?= $row['kamar'] ?></td>
-                                                    <td><?= $row['jamkes'] ?></td>
-                                                    <td><?= date('d F Y', strtotime($row['tanggal_masuk'])) ?></td>
-                                                    <td><?= date('d F Y', strtotime($row['tanggal_keluar'])) ?></td>
-                                                    <td>
+                                                    <td class="text-nowrap"><?= $no++ ?></td>
+                                                    <td class="text-nowrap"><?= $row['no_rm'] ?></td>
+                                                    <td class="text-nowrap"><?= $row['nama'] ?></td>
+                                                    <td class="text-nowrap"><?= $row['alamat'] ?></td>
+                                                    <td class="text-nowrap"><?= $row['dokter'] ?></td>
+                                                    <td class="text-nowrap"><?= $row['diagnosa'] ?></td>
+                                                    <td class="text-nowrap"><?= $row['kamar'] ?></td>
+                                                    <td class="text-nowrap"><?= $row['jamkes'] ?></td>
+                                                    <td class="text-nowrap"><?= $row['rujukan'] ?></td>
+                                                    <td class="text-nowrap"><?= date('d F Y', strtotime($row['tanggal_masuk'])) ?></td>
+                                                    <td class="text-nowrap"><?= date('d F Y', strtotime($row['tanggal_keluar'])) ?></td>
+                                                    <td class="text-nowrap">
                                                         <?php
                                                         $diff = date_diff(date_create($row['tanggal_masuk']), date_create($row['tanggal_keluar']));
                                                         echo $diff->format('%d hari');
                                                         ?>
                                                     </td>
                                                     <?php if ($user['role'] == 'ranap') : ?>
-                                                        <td>
+                                                        <td class="text-nowrap">
                                                             <a href="edit-datatamu.php?id=<?= $row['id'] ?>" class="btn btn-info btn-sm">Edit</a>
                                                         </td>
                                                     <?php endif; ?>
@@ -166,9 +168,11 @@ $data = mysqli_query($conn, "SELECT rekam_medis.*, kamar.nama AS kamar, dokter.n
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
     <script src="js/sb-admin-2.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>    
     <script>
         $('#datatable').DataTable({
             "columnDefs": [{
@@ -180,7 +184,15 @@ $data = mysqli_query($conn, "SELECT rekam_medis.*, kamar.nama AS kamar, dokter.n
                 buttons: [{
                     extend: 'excelHtml5',
                     exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    orientation: 'landscape',
+                    pageSize: 'LEGAL',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
                     }
                 }]
             <?php endif; ?>

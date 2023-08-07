@@ -15,8 +15,16 @@ if (!isset($_GET['id'])) {
         $diagnosa = $_POST["diagnosa"];
         $jamkes = $_POST["jamkes"];
         $tanggal_keluar = $_POST["tanggal_keluar"];
+        $tanggal_masuk = $_POST["tanggal_masuk"];
+        $no_rm = $_POST["no_rm"];
+        $nama = $_POST["nama"];
+        $alamat = $_POST["alamat"];
+        $id_dokter = $_POST["id_dokter"];
+        $id_kamar = $_POST["kamar"];
+        $rujukan = $_POST["rujukan"];
 
-        $query = "UPDATE rekam_medis SET diagnosa = '$diagnosa', jamkes = '$jamkes', tanggal_keluar = '$tanggal_keluar' WHERE id = '$_GET[id]'";
+
+        $query = "UPDATE rekam_medis SET diagnosa = '$diagnosa', jamkes = '$jamkes', tanggal_keluar = '$tanggal_keluar', tanggal_masuk = '$tanggal_masuk', rujukan = '$rujukan', alamat = '$alamat', nama = '$nama', no_rm = '$no_rm', id_kamar = '$id_kamar', id_dokter = '$id_dokter' WHERE id = '$_GET[id]'";
         if (mysqli_query($conn, $query)) {
             $_SESSION["success"] = 'Data berhasil disimpan!';
         } else {
@@ -111,19 +119,19 @@ if (!isset($_GET['id'])) {
                                     <form action="" method="post">
                                         <div class="mb-3 form-group">
                                             <label for="no_rm" class="form-label fw-bold">NOMOR REKAM MEDIS <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="no_rm" required disabled value="<?= $data['no_rm'] ?>">
+                                            <input type="text" class="form-control" id="no_rm" required name="no_rm" value="<?= $data['no_rm'] ?>">
                                         </div>
                                         <div class="mb-3 form-group">
                                             <label for="nama" class="form-label fw-bold">NAMA <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="nama" required disabled autocomplete="off" value="<?= $data['nama'] ?>">
+                                            <input type="text" class="form-control" id="nama" required name="nama" autocomplete="off" value="<?= $data['nama'] ?>">
                                         </div>
                                         <div class="mb-3 form-group">
                                             <label for="alamat" class="form-label fw-bold">ALAMAT <span class="text-danger">*</span></label>
-                                            <textare id="alamat" rows="2" class="form-control disabled" required disabled autocomplete="off"><?= $data['alamat'] ?></textare>
+                                            <textare id="alamat" rows="2" class="form-control" required name="alamat" autocomplete="off"><?= $data['alamat'] ?></textare>
                                         </div>
                                         <div class="mb-3 form-group">
                                             <label for="id_dokter" class="form-label fw-bold">DOKTER PENANGGUNG JAWAB <span class="text-danger">*</span></label>
-                                            <select class="form-control form-select" required disabled>
+                                            <select class="form-control form-select" required name="id_dokter">
                                                 <option value=""></option>
                                                 <?php while ($row = mysqli_fetch_assoc($listDokter)) : ?>
                                                     <option value="<?= $row['id_dokter'] ?>" <?= $row['id_dokter'] == $data['id_dokter'] ? 'selected' : '' ?>><?= $row['nama'] ?></option>
@@ -132,7 +140,7 @@ if (!isset($_GET['id'])) {
                                         </div>
                                         <div class="mb-3 form-group">
                                             <label for="kamar" class="form-label fw-bold">KAMAR PERAWATAN <span class="text-danger">*</span></label>
-                                            <select class="form-control form-select" required="required" disabled>
+                                            <select class="form-control form-select" required="required" name="kamar">
                                                 <option value=""> </option>
                                                 <?php while ($row = mysqli_fetch_assoc($listKamar)) : ?>
                                                     <option value="<?= $row['id_kamar'] ?>" <?= $row['id_kamar'] == $data['id_kamar'] ? 'selected' : '' ?>><?= $row['nama'] ?></option>
@@ -141,7 +149,7 @@ if (!isset($_GET['id'])) {
                                         </div>
                                         <div class="mb-3 form-group">
                                             <label for="rujukan" class="form-label fw-bold">RUJUKAN DARI</label>
-                                            <select disabled class="form-control form-select">
+                                            <select name="rujukan" class="form-control form-select">
                                                 <option value=""></option>
                                                 <option <?= 'Unit Gawat Darurat' == $data['rujukan'] ? 'selected' : '' ?> value="Unit Gawat Darurat">Unit Gawat Darurat</option>
                                                 <option <?= 'Poli Penyakit Dalam' == $data['rujukan'] ? 'selected' : '' ?> value="Poli Penyakit Dalam">Poli Penyakit Dalam</option>
@@ -177,7 +185,7 @@ if (!isset($_GET['id'])) {
                                         </div>
                                         <div class="mb-3 form-group">
                                             <label for="" class="form-label fw-bold">TANGGAL MASUK <span class="text-danger">*</span></label>
-                                            <input type="date" class="form-control" disabled value="<?= $data['tanggal_masuk'] ?>">
+                                            <input type="date" class="form-control" name="tanggal_masuk" value="<?= $data['tanggal_masuk'] ?>">
                                         </div>
                                         <div class="mb-3 form-group">
                                             <label for="tanggal_keluar" class="form-label fw-bold">TANGGAL KELUAR <span class="text-danger">*</span></label>
