@@ -14,7 +14,7 @@ $data = mysqli_query($conn, "SELECT rekam_medis.*, kamar.nama AS kamar, dokter.n
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Dashboard - BukuTamu</title>
+    <title>Laporan Data Pasien Rawat Inap</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -82,7 +82,7 @@ $data = mysqli_query($conn, "SELECT rekam_medis.*, kamar.nama AS kamar, dokter.n
                 <!-- Begin Page Content -->
                 <div class="container-fluid mt-4">
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Laporan Data Tamu</h1>
+                        <h1 class="h3 mb-0 text-gray-800">Laporan Data Pasien Rawat Inap</h1>
                     </div>
                     <div class="row">
                         <div class="col-12">

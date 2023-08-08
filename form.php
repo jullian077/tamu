@@ -49,9 +49,7 @@ if (isset($_POST["no_rm"])) {
                         <a href="index.php">
                             <img src="assets/images/BukuTamu.png">
                         </a>
-                        <h3 class="sub-header">
-                            RSUD BANTARGEBANG
-                        </h3>
+                       
                         <form action="" method="post">
                             <div class="mb-3 form-group">
                                 <?php if (isset($_SESSION["success"])) : ?>
@@ -142,7 +140,7 @@ if (isset($_POST["no_rm"])) {
                     </div>
                 </div>
                 <div class="col-lg-7 text-center illustration-form py-5 ps-5">
-                    <img src="assets/images/Illustration.png" class="text-center ps-5 pt-5 mt-5">
+                    <img src="assets/images/ners.png" class="text-center ps-5 pt-5 mt-5">
                 </div>
             </div>
         </div>
