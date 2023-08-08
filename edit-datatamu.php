@@ -14,7 +14,7 @@ if (!isset($_GET['id'])) {
     if (isset($_POST["submit"])) {
         $diagnosa = $_POST["diagnosa"];
         $jamkes = $_POST["jamkes"];
-        $tanggal_keluar = $_POST["tanggal_keluar"];
+        $tanggal_keluar = $_POST["tanggal_keluar"] ? ', tanggal_keluar = "' . $_POST["tanggal_keluar"] . '"' : ', tanggal_keluar = NULL';
         $tanggal_masuk = $_POST["tanggal_masuk"];
         $no_rm = $_POST["no_rm"];
         $nama = $_POST["nama"];
@@ -24,13 +24,17 @@ if (!isset($_GET['id'])) {
         $rujukan = $_POST["rujukan"];
 
 
-        $query = "UPDATE rekam_medis SET diagnosa = '$diagnosa', jamkes = '$jamkes', tanggal_keluar = '$tanggal_keluar', tanggal_masuk = '$tanggal_masuk', rujukan = '$rujukan', alamat = '$alamat', nama = '$nama', no_rm = '$no_rm', id_kamar = '$id_kamar', id_dokter = '$id_dokter' WHERE id = '$_GET[id]'";
+        $query = "UPDATE rekam_medis SET diagnosa = '$diagnosa', jamkes = '$jamkes' $tanggal_keluar, tanggal_masuk = '$tanggal_masuk', rujukan = '$rujukan', alamat = '$alamat', nama = '$nama', no_rm = '$no_rm', id_kamar = '$id_kamar', id_dokter = '$id_dokter' WHERE id = '$_GET[id]'";
         if (mysqli_query($conn, $query)) {
             $_SESSION["success"] = 'Data berhasil disimpan!';
         } else {
             $_SESSION["error"] = 'Data gagal disimpan!';
         }
-        header("location: datatamu.php");
+        if ($_POST["tanggal_keluar"]) {
+            header("location: laporan.php");
+        } else {
+            header("location: datatamu.php");
+        }
     }
 }
 ?>
@@ -127,7 +131,7 @@ if (!isset($_GET['id'])) {
                                         </div>
                                         <div class="mb-3 form-group">
                                             <label for="alamat" class="form-label fw-bold">ALAMAT <span class="text-danger">*</span></label>
-                                            <textare id="alamat" rows="2" class="form-control" required name="alamat" autocomplete="off"><?= $data['alamat'] ?></textare>
+                                            <textarea id="alamat" rows="2" class="form-control" required name="alamat" autocomplete="off"><?= $data['alamat'] ?></textarea>
                                         </div>
                                         <div class="mb-3 form-group">
                                             <label for="id_dokter" class="form-label fw-bold">DOKTER PENANGGUNG JAWAB <span class="text-danger">*</span></label>
@@ -169,7 +173,7 @@ if (!isset($_GET['id'])) {
                                                 </label>
                                                 <br>
                                                 <label for="lkm-nik">
-                                                    <input type="radio" name="jamkes" value="lkm-nik" id="lkm-nik" <?= 'lkm' == $data['jamkes'] ? 'checked' : '' ?>>
+                                                    <input type="radio" name="jamkes" value="lkm-nik" id="lkm-nik" <?= 'lkm-nik' == $data['jamkes'] ? 'checked' : '' ?>>
                                                     LKM-NIK
                                                 </label>
                                                 <br>
@@ -188,8 +192,8 @@ if (!isset($_GET['id'])) {
                                             <input type="date" class="form-control" name="tanggal_masuk" value="<?= $data['tanggal_masuk'] ?>">
                                         </div>
                                         <div class="mb-3 form-group">
-                                            <label for="tanggal_keluar" class="form-label fw-bold">TANGGAL KELUAR <span class="text-danger">*</span></label>
-                                            <input type="date" class="form-control" id="tanggal_keluar" name="tanggal_keluar" required value="<?= $data['tanggal_keluar'] ?>">
+                                            <label for="tanggal_keluar" class="form-label fw-bold">TANGGAL KELUAR</label>
+                                            <input type="date" class="form-control" id="tanggal_keluar" name="tanggal_keluar" value="<?= $data['tanggal_keluar'] ?>">
                                         </div>
                                         <div class="d-grid gap-2 button-form">
                                             <button type="submit" class="btn btn-master btn-primary" name="submit">
