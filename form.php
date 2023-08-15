@@ -37,6 +37,7 @@ if (isset($_POST["no_rm"])) {
 
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
         <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
 
         <title>Ranap Bantargebang</title>
     </head>
@@ -49,21 +50,19 @@ if (isset($_POST["no_rm"])) {
                         <a href="index.php">
                             <img src="assets/images/BukuTamu.png">
                         </a>
-                       
+
                         <form action="" method="post">
-                            <div class="mb-3 form-group">
+                            <div class="mb-3 form-group mt-4">
                                 <?php if (isset($_SESSION["success"])) : ?>
                                     <div class="alert alert-success" role="alert">
                                         <?= $_SESSION["success"] ?>
                                     </div>
-                                <?php unset($_SESSION["success"]);
-                                endif; ?>
+                                <?php endif; ?>
                                 <?php if (isset($_SESSION["error"])) : ?>
                                     <div class="alert alert-danger" role="alert">
                                         <?= $_SESSION["error"] ?>
                                     </div>
-                                <?php unset($_SESSION["error"]);
-                                endif; ?>
+                                <?php endif; ?>
                             </div>
                             <div class="mb-3 form-group">
                                 <label for="no_rm" class="form-label fw-bold">NOMOR REKAM MEDIS <span class="text-danger">*</span></label>
@@ -144,6 +143,46 @@ if (isset($_POST["no_rm"])) {
                 </div>
             </div>
         </div>
+        <?php if (isset($_SESSION["error"])) : ?>
+            <div class="modal fade" id="modal-popup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body h4 text-success fw-bold text-center">
+                            <?= $_SESSION["error"] ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                $(document).ready(function() {
+                    $('#modal-popup').modal('show');
+                });
+            </script>
+        <?php unset($_SESSION["error"]);
+        endif; ?>
+        <?php if (isset($_SESSION["success"])) : ?>
+            <div class="modal fade" id="modal-popup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body h4 text-success fw-bold text-center">
+                            <?= $_SESSION["success"] ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                $(document).ready(function() {
+                    $('#modal-popup').modal('show');
+                });
+            </script>
+        <?php unset($_SESSION["success"]);
+        endif; ?>
     </body>
 
     </html>
