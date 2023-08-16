@@ -131,8 +131,8 @@ $data = mysqli_query($conn, "SELECT rekam_medis.*, kamar.nama AS kamar, dokter.n
                                                     <td class="text-nowrap"><?= $row['dokter'] ?></td>
                                                     <td class="text-nowrap"><?= $row['diagnosa'] ?></td>
                                                     <td class="text-nowrap"><?= $row['kamar'] ?></td>
-                                                    <td class="text-nowrap"><?= $row['jamkes'] ?></td>
                                                     <td class="text-nowrap"><?= $row['rujukan'] ?></td>
+                                                    <td class="text-nowrap"><?= $row['jamkes'] ?></td>
                                                     <td class="text-nowrap"><?= date('d F Y', strtotime($row['tanggal_masuk'])) ?></td>
                                                     <?php if ($user['role'] == 'ranap') : ?>
                                                         <td class="text-nowrap">

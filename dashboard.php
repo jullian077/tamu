@@ -102,7 +102,7 @@ $countPasienKeluar = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM rekam_me
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Sistem BukuTamu 2022</span>
+                        <span>Copyright &copy; RSUD Bantargebang</span>
                     </div>
                 </div>
             </footer>

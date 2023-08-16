@@ -47,7 +47,7 @@ if (isset($_POST["no_rm"])) {
                 <div class="col-lg-5">
                     <div class="p-5">
                         <a href="index.php">
-                            <img src="assets/images/BukuTamu.png">
+                            <img src="assets/images/Untitled.png" width="420" height="100">
                         </a>
                        
                         <form action="" method="post">
