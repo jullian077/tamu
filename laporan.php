@@ -4,7 +4,21 @@ if (!isset($_SESSION["username"])) {
     header("Location: login.php");
     exit;
 }
-$data = mysqli_query($conn, "SELECT rekam_medis.*, kamar.nama AS kamar, dokter.nama AS dokter, dokter.spesialis AS dokter_spesialis FROM rekam_medis INNER JOIN kamar ON rekam_medis.id_kamar = kamar.id_kamar INNER JOIN dokter ON rekam_medis.id_dokter = dokter.id_dokter WHERE rekam_medis.tanggal_keluar IS NOT NULL ORDER BY tanggal_masuk DESC");
+// sql where tanggal keluar year
+if (isset($_GET['tahun']) && $_GET['tahun'] != '') {
+    $tahun = $_GET['tahun'];
+    $where = "AND YEAR(tanggal_keluar) = '$tahun'";
+} else {
+    $where = '';
+}
+// sql where tanggal keluar month
+if (isset($_GET['bulan']) && $_GET['bulan'] != '') {
+    $bulan = $_GET['bulan'];
+    $where .= " AND MONTH(tanggal_keluar) = '$bulan'";
+}
+
+
+$data = mysqli_query($conn, "SELECT rekam_medis.*, kamar.nama AS kamar, dokter.nama AS dokter, dokter.spesialis AS dokter_spesialis FROM rekam_medis INNER JOIN kamar ON rekam_medis.id_kamar = kamar.id_kamar INNER JOIN dokter ON rekam_medis.id_dokter = dokter.id_dokter WHERE rekam_medis.tanggal_keluar IS NOT NULL $where ORDER BY tanggal_masuk DESC");
 ?>
 
 <!DOCTYPE html>
@@ -101,6 +115,59 @@ $data = mysqli_query($conn, "SELECT rekam_medis.*, kamar.nama AS kamar, dokter.n
                         </div>
                         <div class="col-12">
                             <div class="card">
+                                <div class="card-header">
+                                    <form action="" method="get">
+                                        <div class="form-group mb-1">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    <label for="bulan" class="form-label pt-2 fw-bold">Bulan: &nbsp;&nbsp;&nbsp;</label>
+                                                </div>
+                                                <div>
+                                                    <select name="bulan" id="bulan" class="form-select form-select-sm form-control-sm form-control">
+                                                        <option value="">Semua</option>
+                                                        <option <?= isset($_GET['bulan']) && $_GET['bulan'] == 1 ? 'selected' : '' ?> value="1">Januari</option>
+                                                        <option <?= isset($_GET['bulan']) && $_GET['bulan'] == 2 ? 'selected' : '' ?> value="2">Februari</option>
+                                                        <option <?= isset($_GET['bulan']) && $_GET['bulan'] == 3 ? 'selected' : '' ?> value="3">Maret</option>
+                                                        <option <?= isset($_GET['bulan']) && $_GET['bulan'] == 4 ? 'selected' : '' ?> value="4">April</option>
+                                                        <option <?= isset($_GET['bulan']) && $_GET['bulan'] == 5 ? 'selected' : '' ?> value="5">Mei</option>
+                                                        <option <?= isset($_GET['bulan']) && $_GET['bulan'] == 6 ? 'selected' : '' ?> value="6">Juni</option>
+                                                        <option <?= isset($_GET['bulan']) && $_GET['bulan'] == 7 ? 'selected' : '' ?> value="7">Juli</option>
+                                                        <option <?= isset($_GET['bulan']) && $_GET['bulan'] == 8 ? 'selected' : '' ?> value="8">Agustus</option>
+                                                        <option <?= isset($_GET['bulan']) && $_GET['bulan'] == 9 ? 'selected' : '' ?> value="9">September</option>
+                                                        <option <?= isset($_GET['bulan']) && $_GET['bulan'] == 10 ? 'selected' : '' ?> value="10">Oktober</option>
+                                                        <option <?= isset($_GET['bulan']) && $_GET['bulan'] == 11 ? 'selected' : '' ?> value="11">November</option>
+                                                        <option <?= isset($_GET['bulan']) && $_GET['bulan'] == 12 ? 'selected' : '' ?> value="12">Desember</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group mb-1">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    <label for="tahun" class="form-label pt-2 fw-bold">Tahun: &nbsp;&nbsp;&nbsp;</label>
+                                                </div>
+                                                <div>
+                                                    <select name="tahun" id="tahun" class="form-select form-control form-control-sm">
+                                                        <option value="">Semua</option>
+                                                        <?php
+                                                        $years = [];
+                                                        $queryYear = mysqli_query($conn, "SELECT tanggal_keluar FROM rekam_medis WHERE tanggal_keluar IS NOT NULL");
+                                                        while ($rowYear = mysqli_fetch_assoc($queryYear)) {
+                                                            if (!in_array(date('Y', strtotime($rowYear['tanggal_keluar'])), $years)) {
+                                                                array_push($years, date('Y', strtotime($rowYear['tanggal_keluar'])));
+                                                        ?>
+                                                                <option value="<?= date('Y', strtotime($rowYear['tanggal_keluar'])); ?>" <?= isset($_GET['tahun']) && date('Y', strtotime($rowYear['tanggal_keluar'])) == $_GET['tahun'] ? 'selected' : '' ?>><?= date('Y', strtotime($rowYear['tanggal_keluar'])); ?></option>
+                                                        <?php }
+                                                        } ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group mb-0">
+                                            <button type="submit" class="btn btn-info btn-sm">Terapkan Filter</button>
+                                        </div>
+                                    </form>
+                                </div>
                                 <div class="card-body table-responsive">
                                     <table class="table table-bordered table-hover table-sm" id="datatable">
                                         <thead>
@@ -172,7 +239,7 @@ $data = mysqli_query($conn, "SELECT rekam_medis.*, kamar.nama AS kamar, dokter.n
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>    
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
     <script>
         $('#datatable').DataTable({
             "columnDefs": [{
@@ -182,19 +249,20 @@ $data = mysqli_query($conn, "SELECT rekam_medis.*, kamar.nama AS kamar, dokter.n
             <?php if ($user['role'] != 'ranap') : ?>
                 dom: 'Bfrtip',
                 buttons: [{
-                    extend: 'excelHtml5',
-                    exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+                        extend: 'excelHtml5',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        orientation: 'landscape',
+                        pageSize: 'LEGAL',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+                        }
                     }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    orientation: 'landscape',
-                    pageSize: 'LEGAL',
-                    exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-                    }
-                }]
+                ]
             <?php endif; ?>
         });
     </script>
