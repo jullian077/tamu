@@ -21,30 +21,6 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <img src="assets/images/Untitled.png" alt="" width="200" height="200">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">    
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="index.php">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#about">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contact">Contact Us</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
     <section class="banner">
         <div class="container">
             <div class="row justify-content-center">
@@ -69,7 +45,7 @@
                         </div>
                         <div class="col-lg-6 col-12 text-center pl-200">
                             <a href="#">
-                                <img src="assets/images/ranap.png"  alt="" width="580" height="480">
+                                <img src="assets/images/ranap.png"  alt="" width="695" height="600">
                             </a>
                         </div>
                     </div>
