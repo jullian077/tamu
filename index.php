@@ -59,38 +59,6 @@
         </div>
     </section>
 
-    <section class="about">
-        <div id="about"></div>
-        <div class="container">
-            <div class="row text-center">
-                <div class="col-lg-12 col-12 header-wrap">
-                    <h2 class="primary-header">
-                        About Our Team
-                    </h2>
-                </div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col">
-                    <div class="about-image">
-                        <img src="assets/images/image.png" alt="Photo About">
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="about-header">
-                        <p>Membantu orang lain sudah menjadi tanggung jawab kami</p>
-                    </div>
-                    <div class="about-text">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <br> ac at libero feugiat volutpat quis mi faucibus est. <br> Sem fringilla suspendisse facilisis purus gravida. </p>
-                    </div>
-                    <a href="about-us.html" class="btn btn-master btn-primary cta">
-                        More Info
-                        <i class="fa-solid fa-arrow-right" style="margin-left: 5px;"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <footer class="test">
         <div class="container p-4">
           <div class="row">
@@ -126,24 +94,6 @@
                   </li>
                 </ul>
             </div>
-          <!--  <div class="col-lg-3">
-                <h5 class="text-white">Follow Our Social Media</h5>
-                <div class="image">
-                    <a href="https://m.facebook.com/profile.php?id=537442506281669&refid">
-                        <i class="fa-brands fa-facebook-square fa-2xl"></i>
-                    </a>
-                    <a href="https://www.instagram.com/rsudbantargebang/">
-                        <i class="fa-brands fa-instagram fa-2xl"></i>
-                    </a>
-                    <a href="https://www.youtube.com/channel/UCDP1pclaNzd4NrqXlYCISYg/videos">
-                        <i class="fa-brands fa-youtube fa-2xl"></i>
-                    </a>
-                   <a href="https://m.facebook.com/profile.php?id=537442506281669&refid">
-                        <img src="/assets/images/facebook.png" alt="">
-                    </a>
-                    <a href="https://www.instagram.com/balaitanmiyat/">
-                        <img src="/assets/images/instagram.png" alt="">
-                    </a> -->
                 </div>
             </div>
           </div>
