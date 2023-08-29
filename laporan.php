@@ -1,9 +1,11 @@
 <?php
 include 'config/koneksi.php';
+// cek apakah user sudah login
 if (!isset($_SESSION["username"])) {
     header("Location: login.php");
     exit;
 }
+// jika tahun tidak kosong maka tampilkan data berdasarkan tahun tanggal keluar yang dipilih
 // sql where tanggal keluar year
 if (isset($_GET['tahun']) && $_GET['tahun'] != '') {
     $tahun = $_GET['tahun'];
@@ -11,6 +13,8 @@ if (isset($_GET['tahun']) && $_GET['tahun'] != '') {
 } else {
     $where = '';
 }
+
+// jika bulan tidak kosong maka tampilkan data berdasarkan bulan tanggal keluar yang dipilih
 // sql where tanggal keluar month
 if (isset($_GET['bulan']) && $_GET['bulan'] != '') {
     $bulan = $_GET['bulan'];
@@ -36,7 +40,6 @@ $data = mysqli_query($conn, "SELECT rekam_medis.*, kamar.nama AS kamar, dokter.n
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
-    <!-- Custom styles for this template-->
     <link href="assets/styles/sb-admin-2.css" rel="stylesheet">
     <link rel="stylesheet" href="vendor/datatables/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
@@ -64,10 +67,8 @@ $data = mysqli_query($conn, "SELECT rekam_medis.*, kamar.nama AS kamar, dokter.n
                 </a>
             </li>
 
-            <!-- Divider -->
             <hr class="sidebar-divider">
 
-            <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link" href="datatamu.php">
                     <i class="fa-solid fa-list-check"></i>
@@ -93,13 +94,13 @@ $data = mysqli_query($conn, "SELECT rekam_medis.*, kamar.nama AS kamar, dokter.n
         </ul>
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
-                <!-- Begin Page Content -->
                 <div class="container-fluid mt-4">
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Laporan Data Pasien Rawat Inap</h1>
                     </div>
                     <div class="row">
                         <div class="col-12">
+                            <!-- menampilkan pesan error atau sukses -->
                             <?php if (isset($_SESSION["error"])) : ?>
                                 <div class="alert alert-danger" role="alert">
                                     <?= $_SESSION["error"] ?>
@@ -150,11 +151,14 @@ $data = mysqli_query($conn, "SELECT rekam_medis.*, kamar.nama AS kamar, dokter.n
                                                     <select name="tahun" id="tahun" class="form-select form-control form-control-sm">
                                                         <option value="">Semua</option>
                                                         <?php
+                                                        // mengambil tahun dari tanggal keluar
                                                         $years = [];
                                                         $queryYear = mysqli_query($conn, "SELECT tanggal_keluar FROM rekam_medis WHERE tanggal_keluar IS NOT NULL");
                                                         while ($rowYear = mysqli_fetch_assoc($queryYear)) {
                                                             if (!in_array(date('Y', strtotime($rowYear['tanggal_keluar'])), $years)) {
+                                                                // memasukkan tahun ke array
                                                                 array_push($years, date('Y', strtotime($rowYear['tanggal_keluar'])));
+                                                                // menampilkan tahun ke option select
                                                         ?>
                                                                 <option value="<?= date('Y', strtotime($rowYear['tanggal_keluar'])); ?>" <?= isset($_GET['tahun']) && date('Y', strtotime($rowYear['tanggal_keluar'])) == $_GET['tahun'] ? 'selected' : '' ?>><?= date('Y', strtotime($rowYear['tanggal_keluar'])); ?></option>
                                                         <?php }
@@ -202,14 +206,17 @@ $data = mysqli_query($conn, "SELECT rekam_medis.*, kamar.nama AS kamar, dokter.n
                                                     <td class="text-nowrap"><?= $row['kamar'] ?></td>
                                                     <td class="text-nowrap"><?= $row['jamkes'] ?></td>
                                                     <td class="text-nowrap"><?= $row['rujukan'] ?></td>
+                                                    <!-- menampilkan tanggal masuk dan keluar -->
                                                     <td class="text-nowrap"><?= date('d F Y', strtotime($row['tanggal_masuk'])) ?></td>
                                                     <td class="text-nowrap"><?= date('d F Y', strtotime($row['tanggal_keluar'])) ?></td>
                                                     <td class="text-nowrap">
                                                         <?php
+                                                        // menghitung selisih tanggal keluar dan tanggal masuk
                                                         $diff = date_diff(date_create($row['tanggal_masuk']), date_create($row['tanggal_keluar']));
                                                         echo $diff->format('%d hari');
                                                         ?>
                                                     </td>
+                                                    <!-- jika role user adalah ranap maka tampilkan button edit -->
                                                     <?php if ($user['role'] == 'ranap') : ?>
                                                         <td class="text-nowrap">
                                                             <a href="edit-datatamu.php?id=<?= $row['id'] ?>" class="btn btn-info btn-sm">Edit</a>
@@ -241,6 +248,9 @@ $data = mysqli_query($conn, "SELECT rekam_medis.*, kamar.nama AS kamar, dokter.n
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
     <script>
+        // inisialisasi datatable
+        // jika role bukan ranap maka tampilkan tombol export
+
         $('#datatable').DataTable({
             "columnDefs": [{
                 "targets": [0],

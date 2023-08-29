@@ -1,19 +1,28 @@
 <?php
 include 'config/koneksi.php';
+// cek apakah user sudah login
 if (!isset($_SESSION["username"])) {
     header("Location: login.php");
     exit;
 }
+
+// jika tidak ada id di url
 if (!isset($_GET['id'])) {
     header("location: datatamu.php");
 } else {
+    // ambil data berdasarkan id
     $data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM rekam_medis WHERE id = '$_GET[id]'"));
+    // mendapatkan data semua dokter dan kamar
     $listDokter = mysqli_query($conn, "SELECT * FROM dokter");
     $listKamar = mysqli_query($conn, "SELECT * FROM kamar");
 
     if (isset($_POST["submit"])) {
+        // ambil data dari form
         $diagnosa = $_POST["diagnosa"];
         $jamkes = $_POST["jamkes"];
+        // cek apakah tanggal keluar diisi
+        // jika diisi, maka tambahkan tanggal keluar
+        // jika tidak, maka tanggal keluar = NULL (kosong)
         $tanggal_keluar = $_POST["tanggal_keluar"] ? ', tanggal_keluar = "' . $_POST["tanggal_keluar"] . '"' : ', tanggal_keluar = NULL';
         $tanggal_masuk = $_POST["tanggal_masuk"];
         $no_rm = $_POST["no_rm"];
@@ -23,13 +32,15 @@ if (!isset($_GET['id'])) {
         $id_kamar = $_POST["kamar"];
         $rujukan = $_POST["rujukan"];
 
-
+        // query update data
         $query = "UPDATE rekam_medis SET diagnosa = '$diagnosa', jamkes = '$jamkes' $tanggal_keluar, tanggal_masuk = '$tanggal_masuk', rujukan = '$rujukan', alamat = '$alamat', nama = '$nama', no_rm = '$no_rm', id_kamar = '$id_kamar', id_dokter = '$id_dokter' WHERE id = '$_GET[id]'";
         if (mysqli_query($conn, $query)) {
             $_SESSION["success"] = 'Data berhasil disimpan!';
         } else {
             $_SESSION["error"] = 'Data gagal disimpan!';
         }
+        // jika tanggal keluar diisi, maka redirect ke laporan.php
+        // jika tidak, maka redirect ke datatamu.php
         if ($_POST["tanggal_keluar"]) {
             header("location: laporan.php");
         } else {

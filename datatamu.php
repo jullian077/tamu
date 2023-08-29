@@ -1,10 +1,19 @@
 <?php
 include 'config/koneksi.php';
+// cek apakah user sudah login
 if (!isset($_SESSION["username"])) {
     header("Location: login.php");
     exit;
 }
-$data = mysqli_query($conn, "SELECT rekam_medis.*, kamar.nama AS kamar, dokter.nama AS dokter, dokter.spesialis AS dokter_spesialis FROM rekam_medis INNER JOIN kamar ON rekam_medis.id_kamar = kamar.id_kamar INNER JOIN dokter ON rekam_medis.id_dokter = dokter.id_dokter WHERE rekam_medis.tanggal_keluar IS NULL ORDER BY tanggal_masuk DESC");
+
+// melakukan query ke database untuk mendapatkan data rekam_medis yang masih dirawat
+$data = mysqli_query($conn, " SELECT rekam_medis.*, kamar.nama AS kamar, dokter.nama AS dokter, dokter.spesialis AS dokter_spesialis
+    FROM rekam_medis
+    INNER JOIN kamar ON rekam_medis.id_kamar = kamar.id_kamar
+    INNER JOIN dokter ON rekam_medis.id_dokter = dokter.id_dokter
+    WHERE rekam_medis.tanggal_keluar IS NULL
+    ORDER BY tanggal_masuk DESC
+");
 ?>
 
 <!DOCTYPE html>
@@ -166,6 +175,8 @@ $data = mysqli_query($conn, "SELECT rekam_medis.*, kamar.nama AS kamar, dokter.n
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
     <script>
+        // inisialisasi datatable
+        // jika role user bukan ranap, maka tombol export tidak ditampilkan
         $('#datatable').DataTable({
             "columnDefs": [{
                 "targets": [0],

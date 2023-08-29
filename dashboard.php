@@ -5,6 +5,7 @@ if (!isset($_SESSION["username"])) {
     header("Location: login.php");
     exit;
 }
+// query data pasien mengambil total data pasien yang masih dirawat dan yang sudah keluar
 $countPasienMasuk = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM rekam_medis WHERE tanggal_keluar IS NULL"));
 $countPasienKeluar = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM rekam_medis WHERE tanggal_keluar IS NOT NULL"));
 ?>

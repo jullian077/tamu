@@ -4,11 +4,14 @@ if (isset($_SESSION["username"])) {
     header("location: dashboard.php");
 }
 if (isset($_POST["login"])) {
+    // ambil data dari form
     $username = $_POST["username"];
     $password = $_POST["password"];
+    // query data user
     $result = mysqli_query($conn, "SELECT * FROM users WHERE username = '$username'");
     if (mysqli_num_rows($result) === 1) {
         $row = mysqli_fetch_assoc($result);
+        // verifikasi password
         if (password_verify($password, $row['password'])) {
             $_SESSION["username"] = $username;
             header("location: dashboard.php");
@@ -50,6 +53,7 @@ if (isset($_POST["login"])) {
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Login Rawat Inap</h1>
                                     </div>
+                                    <!-- menampilkan pesan error login -->
                                     <?php if (isset($_SESSION["error"])) : ?>
                                         <div class="alert alert-danger" role="alert">
                                             <?= $_SESSION["error"] ?>
