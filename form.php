@@ -131,7 +131,7 @@ $listKamar = mysqli_query($conn, "SELECT * FROM kamar");
                 <div class="modal-body h4 text-dark fw-bold text-center">
                 </div>
                 <div class="modal-footer">
-                    <a href="form.php" class="btn btn-primary">Oke</a>
+                    <a href="index.php" class="btn btn-primary">Oke</a>
                 </div>
             </div>
         </div>
